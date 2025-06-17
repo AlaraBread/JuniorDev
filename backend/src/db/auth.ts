@@ -4,6 +4,10 @@ interface User {
   password: string; // In a real app, this would be hashed
 }
 
+interface Chat {
+  users: string[];
+}
+
 interface Session {
   userId: string;
   token: string;
@@ -14,8 +18,10 @@ class AuthStore {
   private sessions: Map<string, Session> = new Map();
 
   createUser(username: string, password: string): User {
-    if (Array.from(this.users.values()).some(user => user.username === username)) {
-      throw new Error('Username already exists');
+    if (
+      Array.from(this.users.values()).some((user) => user.username === username)
+    ) {
+      throw new Error("Username already exists");
     }
 
     const id = crypto.randomUUID();
@@ -25,9 +31,11 @@ class AuthStore {
   }
 
   validateCredentials(username: string, password: string): User {
-    const user = Array.from(this.users.values()).find(u => u.username === username);
+    const user = Array.from(this.users.values()).find((u) =>
+      u.username === username
+    );
     if (!user || user.password !== password) {
-      throw new Error('Invalid credentials');
+      throw new Error("Invalid credentials");
     }
     return user;
   }
@@ -49,10 +57,10 @@ class AuthStore {
     return this.users.get(session.userId) || null;
   }
 
-  getAllUsers(): Array<Omit<User, 'password'>> {
+  getAllUsers(): Array<Omit<User, "password">> {
     return Array.from(this.users.values()).map(({ id, username }) => ({
       id,
-      username
+      username,
     }));
   }
 }
